@@ -9,5 +9,12 @@ describe("Rendering", () => {
     // screen.debug();
     // screen.debug(screen.getAllByRole("heading"));
     expect(screen.getByRole("heading")).toBeTruthy();
+    expect(screen.getByRole("textbox")).toBeTruthy();
+    expect(screen.getAllByRole("button")[0]).toBeTruthy();
+    expect(screen.getAllByRole("button")[1]).toBeTruthy();
+    // screen.debug(screen.getByText("Udemy"));
+    expect(screen.getByText("Udemy")).toBeTruthy();
+    expect(screen.queryByText("Udeeeemy")).toBeNull();
+    expect(screen.getByTestId("span")).toBeTruthy();
   });
 });
