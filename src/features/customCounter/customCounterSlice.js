@@ -11,9 +11,17 @@ export const fetchDummy = createAsyncThunk("fetch/dummy", async (num) => {
   return num;
 });
 
+export const fetchJSON = createAsyncThunk("fetch/api", async () => {
+  const res = await axios.get("https://jsonplaceholder.typicode.com/users/1");
+  const { username } = res.data;
+  return username;
+});
+
 const initialState = {
   value: 0,
   status: "idle",
+  mode: 0,
+  username: "",
 };
 
 export const customCounterSlice = createSlice({
@@ -21,14 +29,49 @@ export const customCounterSlice = createSlice({
   initialState,
   reducers: {
     increment: (state) => {
-      state.value += 1;
+      switch (state.mode) {
+        case 0:
+          state.value += 1;
+          break;
+        case 1:
+          state.value += 100;
+          break;
+        case 2:
+          state.value += 10000;
+          break;
+        default:
+          break;
+      }
     },
     decrement: (state) => {
       state.value -= 1;
     },
     incrementByAmount: (state, action) => {
-      state.value += action.payload;
+      switch (state.mode) {
+        case 0:
+          state.value += action.payload;
+          break;
+        case 1:
+          state.value += 100 * action.payload;
+          break;
+        case 2:
+          state.value += 10000 * action.payload;
+          break;
+        default:
+          break;
+      }
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchDummy.fulfilled, (state, action) => {
+      state.value = 100 + action.payload;
+    });
+    builder.addCase(fetchDummy.rejected, (state, action) => {
+      state.value = 100 - action.payload;
+    });
+    builder.addCase(fetchJSON.fulfilled, (state, action) => {
+      state.username = action.payload;
+    });
   },
 });
 
@@ -36,5 +79,6 @@ export const { increment, decrement, incrementByAmount } =
   customCounterSlice.actions;
 
 export const selectCount = (state) => state.customCounter.value;
+export const selectUsername = (state) => state.customCounter.username;
 
 export default customCounterSlice.reducer;
